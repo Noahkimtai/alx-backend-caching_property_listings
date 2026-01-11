@@ -47,7 +47,7 @@ services:
   db:
     env_file:
       - .env
-    image: postgres:15
+    image: postgres:latest
     container_name: trip-planner-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -66,7 +66,7 @@ services:
       - trip_network
 
   redis:
-    image: redis:7
+    image: redis:latest
     container_name: trip-planner-redis
     volumes:
       - redis_data:/data
