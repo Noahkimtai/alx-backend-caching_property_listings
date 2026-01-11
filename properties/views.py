@@ -1,7 +1,9 @@
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
+from django.http import JsonResponse
 
 from rest_framework.decorators import api_view
+
 from rest_framework.response import Response
 from .models import Property
 from .serializers import PropertySerializer

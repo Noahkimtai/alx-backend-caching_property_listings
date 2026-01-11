@@ -95,12 +95,13 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://redis:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "CONNECTION_POOL_KWARGS": {"max_connections": 100},
             "SOCKET_CONNECT_TIMEOUT": 5,  # seconds
             "SOCKET_TIMEOUT": 5,  # seconds
+            "IGNORE_EXCEPTIONS": True,  # prevents 500s if Redis is down
         },
         "KEY_PREFIX": "property_db",  # Prevents collisions with other apps
     }
