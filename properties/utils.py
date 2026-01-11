@@ -26,4 +26,14 @@ def get_all_properties():
         )
         cache.set(CACHE_KEY, properties, CACHE_TIMEOUT)
 
+        # cache.set("all_properties", Property.objects.all(), 3600) # BAD Why?
+
+        # QuerySets hold DB connections
+
+        # Not JSON-serializable
+
+        # Can raise pickle/connection errors
+
+        # Causes subtle bugs in production
+
     return properties
