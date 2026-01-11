@@ -15,5 +15,5 @@ from .serializers import PropertySerializer
 def property_list(request):
     properties = Property.objects.all()
     serializer = PropertySerializer(properties, many=True)
-    # return JsonResponse(serializer.data)
+    # return JsonResponse({"key": "value"})
     return Response(serializer.data)
