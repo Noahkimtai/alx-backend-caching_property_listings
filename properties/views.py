@@ -3,7 +3,7 @@ from django.views.decorators.vary import vary_on_cookie
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from . import Property
+from .models import Property
 from .serializers import PropertySerializer
 
 

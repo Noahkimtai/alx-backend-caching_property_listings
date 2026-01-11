@@ -1,82 +1,56 @@
 services:
   backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: properties-backend
     env_file:
       - .env
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: trip-planner-backend
+    volumes:
+      - .:/app
     ports:
       - "8000:8000"
-    environment:
-      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@db:${DATABASE_PORT}/trip-planner
-      REDIS_URL: ${REDIS_URL}
-    volumes:
-      - ./backend:/app
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_started
     networks:
-      - trip_network
-    profiles: ["backend"]
+      - properties_network
 
-  tests:
-    env_file:
-        - .env        
-    build:
-        context: ./backend
-    volumes:
-        - ./backend:/app
-    depends_on:
-        db:
-            condition: service_healthy
-        redis:
-            condition: service_started
-    environment:
-        DJANGO_SETTINGS_MODULE: backend.config.settings
-        DATABASE_HOST: ${DATABASE_HOST}
-        DATABASE_PORT: ${DATABASE_PORT}
-        POSTGRES_DB: ${POSTGRES_DB}
-        POSTGRES_USER: ${POSTGRES_USER}
-        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-        REDIS_URL: ${REDIS_URL}
-    command: pytest
-    profiles: ["test"]
   db:
+    image: postgres:15
+    container_name: properties-db
     env_file:
       - .env
-    image: postgres:latest
-    container_name: trip-planner-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5430:5432" # optional
+      - "5430:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d trip-planner"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5
     networks:
-      - trip_network
+      - properties_network
 
   redis:
-    image: redis:latest
-    container_name: trip-planner-redis
+    image: redis:7
+    container_name: properties-redis
     volumes:
       - redis_data:/data
     networks:
-      - trip_network
+      - properties_network
 
 volumes:
   postgres_data:
   redis_data:
 
 networks:
-  trip_network:
+  properties_network:
     driver: bridge
